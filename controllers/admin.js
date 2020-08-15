@@ -73,9 +73,22 @@ router.post('/addemployee', [
         } else {
             admindb.addEmployee(value, function(result){
                 console.log(result);
-
+                res.redirect('/admin/allemplist');
             });
         }
+    }
+    else{
+        res.redirect('/employee');
+    }
+
+});
+router.get('/allemplist', function(req, res){
+    
+    if(req.cookies['type'] == 'admin'){
+        admindb.getAllEmp(function(result){
+            console.log(result);
+            res.render('admin/allemployee',{emp:result});
+        });
     }
     else{
         res.redirect('/employee');
