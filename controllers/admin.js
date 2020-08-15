@@ -84,6 +84,7 @@ router.post('/addemployee', [
 });
 router.get('/allemplist', function(req, res){
     
+    
     if(req.cookies['type'] == 'admin'){
         admindb.getAllEmp(function(result){
             console.log(result);
@@ -95,5 +96,62 @@ router.get('/allemplist', function(req, res){
     }
 
 });
+
+router.get('/update/:id', function (req, res){
+    
+    if(req.cookies['type'] == 'admin'){
+        id = req.params.id;
+
+        admindb.getEmployee(id, function (result){
+            var data = {
+                name: result.name,
+                phone: result.phone,
+                gender: result.gender,
+                designation: result.designation,
+            };
+            console.log(data);
+            var valueCheck = [];
+
+            res.render('admin/updateEmployee',{data, errors:valueCheck});
+        });
+    }  
+    else{
+        res.redirect('/employee');
+    }
+  
+});
+
+router.post('/update/:id',[
+    body('name','Name required!').notEmpty(),
+    body('phone').notEmpty().withMessage('Phone number required!').isNumeric().withMessage('Phone number must be numeric!').isLength({min: 11, max: 11}).withMessage('Phone number must be 11 characters!'),
+    body('gender','Gender required!').notEmpty(),
+], function (req, res){
+    
+    id= req.params.id;
+
+    admindb.getEmployee(id, function (result){
+        var data = {
+            name: result.name,
+            phone: result.phone,
+            gender: result.gender,
+            designation: result.designation,
+        };
+        
+        var valueCheck = [];
+    
+        validationResult(req).errors.forEach(error => {
+            valueCheck.push(error.msg);
+        });
+
+        if (valueCheck.length > 0){
+            res.render('admin/updateEmployee',{data,errors: valueCheck});
+        } else {
+            admindb.updateEmployee(id, req.body.name, req.body.phone, req.body.gender, req.body.designation, function(result1){
+                res.redirect('/admin/allemplist');
+            });
+        }
+    });    
+}); 
+
 
 module.exports = router;

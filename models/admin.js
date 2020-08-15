@@ -25,5 +25,16 @@ module.exports = {
             });
         });
     },
-
+    getEmployee: function(id, callback){
+        var sql="SELECT * FROM `personal_details`, `login_cred` WHERE u_id = '"+id+"'";
+        db.getResults(sql,function(result){
+            callback(result[0]);
+        });
+    },
+    updateEmployee: function(id, name, phone, gender, designation, callback){
+        var sql="UPDATE `personal_details` SET `name`='"+name+"',`phone`='"+phone+"',`gender`='"+gender+"',`designation`='"+designation+"' WHERE `u_id`='"+id+"';";
+        db.getResults(sql,function(result){
+            callback(result);
+        });
+    },
 }
