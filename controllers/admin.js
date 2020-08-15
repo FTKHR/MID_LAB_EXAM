@@ -153,5 +153,24 @@ router.post('/update/:id',[
     });    
 }); 
 
+router.get('/delete/:id', function(req, res){
 
+    id= req.params.id;
+
+    admindb.getEmployee(id, function(result){
+        
+        res.render('admin/deleteEmp',{employee: result});
+    });    
+});
+
+router.post('/delete/:id', function(req, res){
+
+    id = req.params.id;
+    if(req.body.submit="Yes"){
+        console.log('yes');
+        admindb.deleteEmp(id, function(){
+            res.redirect('/admin/allemplist');
+        });
+    }
+});
 module.exports = router;

@@ -37,4 +37,13 @@ module.exports = {
             callback(result);
         });
     },
+    deleteEmp: function(id, callback){
+        var sql="DELETE FROM `login_cred` WHERE ID = '"+id+"'";
+        db.getResults(sql,function(result1){ 
+            var sql2="DELETE FROM `personal_details` WHERE ID = '"+id+"'";
+            db.getResults(sql2,function(result2){
+                callback(result2);
+            });
+        });
+    }
 }
